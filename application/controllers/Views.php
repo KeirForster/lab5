@@ -30,8 +30,25 @@ class Views extends Application
 
 //        $converted[] = (array) $task;
         $parms = ['display_tasks' => $incomplete];
+				$role = $this->session->userdata('userrole');
+				$parms['completer'] = ($role == ROLE_OWNER) ? '/views/complete' : '#';
         return $this->parser->parse('by_priority',$parms,true);
     }
+	
+		function complete() {
+			$role = $this->session->userdata('userrole');
+			if ($role != ROLE_OWNER) redirect('/views');
+			
+			foreach($this->input->post() as $key=>$value) {
+                if (substr($key,0,4) == 'task') {
+												$taskid = substr($key,4);
+												$task = $this->tasks->get($taskid);
+												$task->status = 2; // complete
+												$this->tasks->update($task);
+                }
+        }
+        $this->index();
+		}
 }
 
 // return -1, 0, or 1 of $a's priority is higher, equal to, or lower than $b's
