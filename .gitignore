@@ -20,3 +20,6 @@ application/logs/*
 
 #my project
 .idea
+
+#tmp for session
+/tmp/*
