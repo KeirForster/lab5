@@ -8,6 +8,46 @@ class Mtce extends Application {
     {
         $this->page(1);
     }
+	
+		// Initiate adding a new task
+		public function add()
+		{
+				$task = $this->tasks->create();
+				$this->session->set_userdata('task', $task);
+				$this->showit();
+		}
+	
+		// initiate editing of a task
+		public function edit($id = null)
+		{
+				if ($id == null)
+						redirect('/mtce');
+				$task = $this->tasks->get($id);
+				$this->session->set_userdata('task', $task);
+				$this->showit();
+		}
+	
+		// Render the current DTO
+		private function showit()
+		{
+				$this->load->helper('form');
+				$task = $this->session->userdata('task');
+				$this->data['id'] = $task->id;
+
+				// if no errors, pass an empty message
+				if ( ! isset($this->data['error']))
+						$this->data['error'] = '';
+
+				$fields = array(
+						'ftask'      => form_label('Task description') . form_input('task', $task->task),
+						'fpriority'  => form_label('Priority') . form_dropdown('priority', $this->app->priority(), $task->priority),
+						'zsubmit'    => form_submit('submit', 'Update the TODO task'),
+				);
+				$this->data = array_merge($this->data, $fields);
+
+				$this->data['pagebody'] = 'itemedit';
+				$this->render();
+		}
 
     // Show a single page of todo items
     private function show_page($tasks)

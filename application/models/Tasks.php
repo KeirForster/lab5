@@ -6,6 +6,18 @@ class Tasks extends CSV_Model
     {
         parent::__construct(APPPATH . '../data/tasks.csv', 'id');
     }
+	
+		// provide form validation rules
+		public function rules()
+		{
+				$config = array(
+						['field' => 'task', 'label' => 'TODO task', 'rules' => 'alpha_numeric_spaces|max_length[64]'],
+						['field' => 'priority', 'label' => 'Priority', 'rules' => 'integer|less_than[4]'],
+						['field' => 'size', 'label' => 'Task size', 'rules' => 'integer|less_than[4]'],
+						['field' => 'group', 'label' => 'Task group', 'rules' => 'integer|less_than[5]'],
+				);
+				return $config;
+		}
 
     function makeCategorizedPanel($tasks)
     {
@@ -17,7 +29,7 @@ class Tasks extends CSV_Model
     {
         // extract the undone tasks
         foreach ($this->all() as $task)
-        {
+        {	
             if ($task->status != 2)
                 $undone[] = $task;
         }
