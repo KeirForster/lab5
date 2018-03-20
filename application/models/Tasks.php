@@ -142,3 +142,40 @@ function load()
     // rebuild the keys table
     $this->reindex();
 }
+
+
+	protected function store()
+	{
+		/*
+		// rebuild the keys table
+		$this->reindex();
+		//---------------------
+		*/
+		if (($handle = fopen($this->_origin, "w")) !== FALSE)
+		{
+		/*
+			fputcsv($handle, $this->_fields);
+			foreach ($this->_data as $key => $record)
+				fputcsv($handle, array_values((array) $record));
+			fclose($handle);
+		}
+		// --------------------
+		*/
+		$xmlDoc = new DOMDocument( "1.0");
+        $xmlDoc->preserveWhiteSpace = false;
+        $xmlDoc->formatOutput = true;
+        $data = $xmlDoc->createElement($this->xml->getName());
+        foreach($this->_data as $key => $value)
+        {
+            $task  = $xmlDoc->createElement($this->xml->children()->getName());
+            foreach ($value as $itemkey => $record ) {
+                $item = $xmlDoc->createElement($itemkey, htmlspecialchars($record));
+                $task->appendChild($item);
+                }
+                $data->appendChild($task);
+            }
+            $xmlDoc->appendChild($data);
+            $xmlDoc->saveXML($xmlDoc);
+            $xmlDoc->save($this->_origin);
+		}
+	}
